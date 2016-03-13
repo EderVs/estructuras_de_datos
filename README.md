@@ -5,7 +5,7 @@
 ### Ciencias de la Computación
 
 
-  - **Profesor:** Canek
+  - **Profesor:** Canek Peláez Valdés
   - **Ayudante:** Alejandro Hernández Mora
   - **Ayudante:** Kimberly Becerril Fuentes
 
