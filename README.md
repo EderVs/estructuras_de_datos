@@ -11,7 +11,7 @@
 
 **Email:** eder.vs@ciencias.unam.mx
 
-#### Práctica  1
+#### Práctica 1
   - *Listas*
 
 #### Práctica 2
@@ -23,7 +23,10 @@
   - *Linear Search*
   - *Binary Search*
 
-#### Práctica  3
+#### Práctica 3
   - *Arbol Binario*
   - *Arbol Binario Completo*
   - *Arbol Binario Ordenado*
+
+#### Práctica 4
+  - *Arbol Binario Rojinegro*
