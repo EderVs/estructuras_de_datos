@@ -36,6 +36,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
          */
         public VerticeRojinegro(T elemento) {
             super(elemento);
+            this.color = color.ROJO;
         }
 
         /**
@@ -43,8 +44,25 @@ public class ArbolRojinegro<T extends Comparable<T>>
          * @return una representación en cadena del vértice rojinegro.
          */
         public String toString() {
-            return "";
+            return elemento.toString();
             // Aquí va su código.
+        }
+
+        /**
+         * Auxiliar de equals. Compara vertice por vertice.
+         * @param v1 Vertice de arbol 1
+         * @param v2 Vertice de arbol 2
+         * @return <code>true</code> si arbol 1 y arbol 2
+         *         son iguales; <code>false</code> en otro caso.
+         */
+        private boolean equals(Vertice v1, Vertice v2) {
+            if (v1 == null && v2 == null) {
+                return true;
+            }
+            if ((v1 == null && v2 != null) || (v1 != null && v2 == null) || !v1.elemento.equals(v2.elemento)) {
+                return false;
+            }
+            return equals(v1.izquierdo, v2.izquierdo) && equals(v1.derecho, v2.derecho);
         }
 
         /**
@@ -58,7 +76,14 @@ public class ArbolRojinegro<T extends Comparable<T>>
          *         otro caso.
          */
         @Override public boolean equals(Object o) {
-            return false;
+            if (o == null)
+                return false;
+            if (getClass() != o.getClass())
+                return false;
+            @SuppressWarnings("unchecked") Vertice vertice = (Vertice)o;
+            @SuppressWarnings("unchecked") VerticeRojinegro verticeRN = (VerticeRojinegro)o;
+            Vertice thisVertice = (Vertice) this;
+            return this.equals(thisVertice, vertice) && verticeRN.color.equals(this.color);
         }
     }
 
@@ -70,7 +95,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
      *         mismo.
      */
     @Override protected Vertice nuevoVertice(T elemento) {
-        return null;
+        return new VerticeRojinegro(elemento);
     }
 
     /**
@@ -97,7 +122,60 @@ public class ArbolRojinegro<T extends Comparable<T>>
      *         VerticeRojinegro}.
      */
     public Color getColor(VerticeArbolBinario<T> vertice) {
-        return null;
+        VerticeRojinegro verticeRN = this.verticeRojinegro(vertice);
+        return verticeRN.color;
+    }
+
+    /**
+     * Verifica si el vertice recibido es hijo izquierdo de su padre
+     * @param v vertice que se verifica.
+     * @throws <code> true </code> si lo es. <code> false </code> en otro caso.
+     */    
+    private boolean esHijoIzquierdo(Vertice v) {
+        if (!v.hayPadre()) {
+            return false;
+        }
+        return v.padre.izquierdo == v;
+    }
+
+    /**
+     * Verifica si el vertice recibido es hijo derecho de su padre
+     * @param v vertice que se verifica.
+     * @throws <code> true </code> si lo es. <code> false </code> en otro caso.
+     */    
+    private boolean esHijoDerecho(Vertice v) {
+        if (!v.hayPadre()) {
+            return false;
+        }
+        return v.padre.derecho == v;
+    }
+
+    private void revalanceoAgrega (VerticeRojinegro vertice) {
+        VerticeRojinegro padre, tio, abuelo;
+        // Caso 1
+        if (!vertice.hayPadre()) {
+            vertice.color = Color.NEGRO;
+            return;
+        }
+        // Caso 2
+        padre = this.verticeRojinegro(vertice.padre);
+        if (padre.color == Color.NEGRO) {
+            return;
+        }
+        //Caso 3
+        abuelo = this.verticeRojinegro(padre.padre);
+        if (this.esHijoIzquierdo(padre)) {
+            tio = this.verticeRojinegro(abuelo.derecho);
+        } else {
+            tio = this.verticeRojinegro(abuelo.izquierdo);
+        }
+        if (tio != null && tio.color == Color.ROJO) {
+            tio.color = Color.NEGRO;
+            padre.color = Color.NEGRO;
+            abuelo.color = Color.ROJO;
+            this.revalanceoAgrega(abuelo);
+            return;
+        }
     }
 
     /**
@@ -107,7 +185,10 @@ public class ArbolRojinegro<T extends Comparable<T>>
      * @param elemento el elemento a agregar.
      */
     @Override public void agrega(T elemento) {
-        // Aquí va su código.
+        VerticeRojinegro ultimoAgregadoRN;
+        super.agrega(elemento);
+        ultimoAgregadoRN = this.verticeRojinegro(this.ultimoAgregado);
+        this.revalanceoAgrega(ultimoAgregadoRN);
     }
 
     /**
