@@ -286,6 +286,8 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
             } else {
                 vi.padre.derecho = vi;
             }
+        } else {
+            this.raiz = vi;
         }
         v.izquierdo = vi.derecho;
         if (vi.hayDerecho()) {
@@ -313,6 +315,8 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
             } else {
                 vd.padre.derecho = vd;
             }
+        } else {
+            this.raiz = vd;
         }
         v.derecho = vd.izquierdo;
         if (vd.hayIzquierdo()) {
