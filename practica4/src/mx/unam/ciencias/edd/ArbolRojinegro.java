@@ -44,7 +44,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
          * @return una representación en cadena del vértice rojinegro.
          */
         public String toString() {
-            return elemento.toString();
+            return ((this.color == Color.NEGRO) ? "N":"R") + "{" + this.elemento.toString() + "}";
             // Aquí va su código.
         }
 
@@ -55,14 +55,14 @@ public class ArbolRojinegro<T extends Comparable<T>>
          * @return <code>true</code> si arbol 1 y arbol 2
          *         son iguales; <code>false</code> en otro caso.
          */
-        private boolean equals(Vertice v1, Vertice v2) {
+        private boolean equals(VerticeRojinegro v1, VerticeRojinegro v2) {
             if (v1 == null && v2 == null) {
                 return true;
             }
-            if ((v1 == null && v2 != null) || (v1 != null && v2 == null) || !v1.elemento.equals(v2.elemento)) {
+            if ((v1 == null && v2 != null) || (v1 != null && v2 == null) || !v1.elemento.equals(v2.elemento) || v1.color != v2.color) {
                 return false;
             }
-            return equals(v1.izquierdo, v2.izquierdo) && equals(v1.derecho, v2.derecho);
+            return equals(verticeRojinegro(v1.izquierdo), verticeRojinegro(v2.izquierdo)) && equals(verticeRojinegro(v1.derecho), verticeRojinegro(v2.derecho));
         }
 
         /**
@@ -80,10 +80,8 @@ public class ArbolRojinegro<T extends Comparable<T>>
                 return false;
             if (getClass() != o.getClass())
                 return false;
-            @SuppressWarnings("unchecked") Vertice vertice = (Vertice)o;
-            @SuppressWarnings("unchecked") VerticeRojinegro verticeRN = (VerticeRojinegro)o;
-            Vertice thisVertice = (Vertice) this;
-            return this.equals(thisVertice, vertice) && verticeRN.color.equals(this.color);
+            @SuppressWarnings("unchecked") VerticeRojinegro vertice = (VerticeRojinegro)o;
+            return this.equals(this, vertice);
         }
     }
 
