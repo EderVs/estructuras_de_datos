@@ -85,7 +85,7 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
     private void agrega(Vertice v, T elemento) {
         if (elemento.compareTo(v.elemento) <= 0) {
             if (!v.hayIzquierdo()) {
-                v.izquierdo = new Vertice(elemento);
+                v.izquierdo = this.nuevoVertice(elemento);
                 v.izquierdo.padre = v;
                 this.ultimoAgregado = v.izquierdo;
                 this.elementos++;
@@ -94,7 +94,7 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
             this.agrega(v.izquierdo, elemento);
         } else {
             if (!v.hayDerecho()) {
-                v.derecho = new Vertice(elemento);
+                v.derecho = this.nuevoVertice(elemento);
                 v.derecho.padre = v;
                 this.ultimoAgregado = v.derecho;
                 this.elementos++;
@@ -109,6 +109,7 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
      * @param elemento el elemento a agregar.
      */
     @Override public void agrega(T elemento) {
+        if (elemento == null) throw new IllegalArgumentException();
         if (this.esVacio()) {
             this.raiz = this.ultimoAgregado = new Vertice(elemento);
             this.elementos++;
