@@ -151,7 +151,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
     }
 
     private void revalanceoAgrega (VerticeRojinegro vertice) {
-        VerticeRojinegro padre, tio, abuelo;
+        VerticeRojinegro padre, tio, abuelo, aux;
         // Caso 1
         if (!vertice.hayPadre()) {
             vertice.color = Color.NEGRO;
@@ -162,7 +162,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
         if (padre.color == Color.NEGRO) {
             return;
         }
-        //Caso 3
+        // Caso 3
         abuelo = this.verticeRojinegro(padre.padre);
         if (this.esHijoIzquierdo(padre)) {
             tio = this.verticeRojinegro(abuelo.derecho);
@@ -175,6 +175,25 @@ public class ArbolRojinegro<T extends Comparable<T>>
             abuelo.color = Color.ROJO;
             this.revalanceoAgrega(abuelo);
             return;
+        }
+        // Caso 4
+        if (this.esHijoIzquierdo(vertice) != this.esHijoIzquierdo(padre)) {
+            if (this.esHijoIzquierdo(padre)) {
+                super.giraIzquierda(padre);
+            } else {
+                super.giraDerecha(padre);
+            }
+            aux = padre;
+            padre = vertice;
+            vertice = aux;
+        }
+        // Caso 5
+        padre.color = Color.NEGRO;
+        abuelo.color = Color.ROJO;
+        if (this.esHijoIzquierdo(vertice)) {
+            this.giraDerecha(abuelo);
+        } else {
+            this.giraIzquierda(abuelo);
         }
     }
 
