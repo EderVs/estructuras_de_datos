@@ -225,7 +225,6 @@ public class ArbolRojinegro<T extends Comparable<T>>
         } else {
             eliminar.padre.derecho = null;
         }
-        this.elementos--;
     }
 
     /**
@@ -327,19 +326,16 @@ public class ArbolRojinegro<T extends Comparable<T>>
             }
             padre = verticeRojinegro(vertice.padre);
             hermano = this.getHermano(vertice);
-            System.out.println("CASO 2");
         }
         // Caso 3
         sobrinoIzq = verticeRojinegro(hermano.izquierdo);
         sobrinoDer = verticeRojinegro(hermano.derecho);
         if (this.esNegro(hermano) && this.esNegro(sobrinoIzq) && this.esNegro(sobrinoDer)) {
             if (this.esNegro(padre)) {
-                System.out.println("CASO 3");
                 hermano.color = Color.ROJO;
                 this.revalanceoElimina(padre);
                 return;
             }
-            System.out.println("CASO 4");
             // Caso 4
             padre.color = Color.NEGRO;
             hermano.color = Color.ROJO;
@@ -349,7 +345,6 @@ public class ArbolRojinegro<T extends Comparable<T>>
         if (this.sonVerticesBicoloreados(sobrinoIzq, sobrinoDer) && (
             // Evaluando si un sobrino es cruzado
             (this.esNegro(sobrinoIzq) && this.esHijoDerecho(vertice)) || (this.esNegro(sobrinoDer) && this.esHijoIzquierdo(vertice)))) {
-            System.out.println("CASO 5");
             // Coloreamos al sobrino Rojo de Negro
             if (!this.esNegro(sobrinoIzq)) {
                 sobrinoIzq.color = Color.NEGRO;
@@ -364,8 +359,10 @@ public class ArbolRojinegro<T extends Comparable<T>>
             } else {
                 super.giraIzquierda(hermano);
             }
+            hermano = this.getHermano(vertice);
+            sobrinoIzq = verticeRojinegro(hermano.izquierdo);
+            sobrinoDer = verticeRojinegro(hermano.derecho);
         }
-        System.out.println("CASO 6");
         // Caso 6
         // Coloreamos al hermano del color del padre
         hermano.color = padre.color;
@@ -406,7 +403,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
         }
         if (eliminar.hayIzquierdo()) {
             aux = verticeRojinegro(maximoEnSubarbol(eliminar.izquierdo));
-            aux.elemento = eliminar.elemento;
+            eliminar.elemento = aux.elemento;
             eliminar = aux;
         }
         if (!eliminar.hayIzquierdo() && !eliminar.hayDerecho()) {
@@ -415,10 +412,12 @@ public class ArbolRojinegro<T extends Comparable<T>>
         }
         hijo = getUnicoHijo(eliminar);
         this.subirUnicoHijo(eliminar);
-        hijo.color = Color.NEGRO;
         // Si tenian diferentes colores, rebalanceamos.
         if (!this.sonVerticesBicoloreados(eliminar, hijo)) {
+            hijo.color = Color.NEGRO;
             this.revalanceoElimina(hijo);
+        } else {
+            hijo.color = Color.NEGRO;
         }
         // Eliminamos el vertice fantasma si lo hay
         this.eliminarFantasma();
