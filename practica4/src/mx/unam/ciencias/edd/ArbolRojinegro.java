@@ -48,7 +48,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
          * @return una representación en cadena del vértice rojinegro.
          */
         public String toString() {
-            return ((this.color == Color.NEGRO) ? "N":"R") + "{" + this.elemento.toString() + "}";
+            return ((esNegro(this)) ? "N":"R") + "{" +  ((this.elemento == null) ? "null":this.elemento.toString()) + "}";
             // Aquí va su código.
         }
 
@@ -273,7 +273,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
      * @return <code> true </code> si lo es. <code> false </code> en otro caso.
      */
     private boolean sonVerticesBicoloreados(VerticeRojinegro v1, VerticeRojinegro v2) {
-        return v1.color != v2.color;
+        return this.esNegro(v1) != this.esNegro(v2);
     }
 
     private void subirUnicoHijo(Vertice padre) {
@@ -325,14 +325,63 @@ public class ArbolRojinegro<T extends Comparable<T>>
             } else {
                 super.giraDerecha(padre);
             }
+            padre = verticeRojinegro(vertice.padre);
+            hermano = this.getHermano(vertice);
+            System.out.println("CASO 2");
         }
         // Caso 3
         sobrinoIzq = verticeRojinegro(hermano.izquierdo);
         sobrinoDer = verticeRojinegro(hermano.derecho);
-        if (this.esNegro(padre) && this.esNegro(hermano) && this.esNegro(sobrinoIzq) && this.esNegro(sobrinoDer)) {
+        if (this.esNegro(hermano) && this.esNegro(sobrinoIzq) && this.esNegro(sobrinoDer)) {
+            if (this.esNegro(padre)) {
+                System.out.println("CASO 3");
+                hermano.color = Color.ROJO;
+                this.revalanceoElimina(padre);
+                return;
+            }
+            System.out.println("CASO 4");
+            // Caso 4
+            padre.color = Color.NEGRO;
             hermano.color = Color.ROJO;
-            this.revalanceoElimina(padre);
             return;
+        }
+        // Caso 5
+        if (this.sonVerticesBicoloreados(sobrinoIzq, sobrinoDer) && (
+            // Evaluando si un sobrino es cruzado
+            (this.esNegro(sobrinoIzq) && this.esHijoDerecho(vertice)) || (this.esNegro(sobrinoDer) && this.esHijoIzquierdo(vertice)))) {
+            System.out.println("CASO 5");
+            // Coloreamos al sobrino Rojo de Negro
+            if (!this.esNegro(sobrinoIzq)) {
+                sobrinoIzq.color = Color.NEGRO;
+            } else {
+                sobrinoDer.color = Color.NEGRO;
+            }
+            // Coloreamos al hermano de Rojo
+            hermano.color = Color.ROJO;
+            //Giramos sobre el hermano en la direccion contraria al vertice
+            if (this.esHijoIzquierdo(vertice)) {
+                super.giraDerecha(hermano);
+            } else {
+                super.giraIzquierda(hermano);
+            }
+        }
+        System.out.println("CASO 6");
+        // Caso 6
+        // Coloreamos al hermano del color del padre
+        hermano.color = padre.color;
+        // Coloreamos al padre de negro
+        padre.color = Color.NEGRO;
+        // Coloreamos al sobrino cruzado de Negro
+        if (this.esHijoIzquierdo(vertice)) {
+            sobrinoDer.color = Color.NEGRO;
+        } else {
+            sobrinoIzq.color = Color.NEGRO;
+        }
+        // Giramos sobre el padre en la direccion del vertice
+        if (this.esHijoIzquierdo(vertice)) {
+            super.giraIzquierda(padre);
+        } else {
+            super.giraDerecha(padre);
         }
     }
 
@@ -362,6 +411,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
         }
         if (!eliminar.hayIzquierdo() && !eliminar.hayDerecho()) {
             eliminar.izquierdo = this.nuevoVertice(null);
+            eliminar.izquierdo.padre = eliminar;
         }
         hijo = getUnicoHijo(eliminar);
         this.subirUnicoHijo(eliminar);
