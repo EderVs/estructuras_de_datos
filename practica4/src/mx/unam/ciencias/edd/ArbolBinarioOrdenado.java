@@ -240,7 +240,7 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
         if (iz != null) {
             return iz;
         }
-        if (vertice.elemento.equals(elemento)) {
+        if ((vertice.elemento == null && elemento == null) || vertice.elemento.equals(elemento)) {
             return vertice;
         }
         return this.busca(vertice.derecho, elemento);
