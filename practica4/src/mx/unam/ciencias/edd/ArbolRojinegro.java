@@ -36,7 +36,11 @@ public class ArbolRojinegro<T extends Comparable<T>>
          */
         public VerticeRojinegro(T elemento) {
             super(elemento);
-            this.color = color.ROJO;
+            if (elemento == null) {
+                this.color = color.NEGRO;
+            } else {
+                this.color = color.ROJO;
+            }
         }
 
         /**
@@ -209,12 +213,116 @@ public class ArbolRojinegro<T extends Comparable<T>>
     }
 
     /**
+     * Auxiliar que regresa el hijo de un vertice que solo tiene un hijo.
+     * @param padre vertice de quien queremos su hijo
+     * @return unico hijo de padre
+     */
+    private VerticeRojinegro getUnicoHijo(VerticeRojinegro padre) {
+        if (padre.hayIzquierdo()) {
+            return verticeRojinegro(padre.izquierdo);
+        }
+        return verticeRojinegro(padre.derecho);
+    } 
+
+    /**
+     * Auxiliar de elimina. Elimina una hoja.
+     * @param eliminar el elemento a eliminar que debe ser hoja.
+     */
+    private void eliminaHoja(Vertice eliminar) {
+        if (this.raiz == eliminar) {
+            this.raiz = null;
+            this.ultimoAgregado = null;
+        } else if (this.esHijoIzquierdo(eliminar)) {
+            eliminar.padre.izquierdo = null;
+        } else {
+            eliminar.padre.derecho = null;
+        }
+        this.elementos--;
+    }
+
+    /**
+     * Auxiliar de elimina. Elimina vertice que no tiene hijo izquierdo.
+     * @param eliminar el elemento a eliminar que debe no tener hijo izquierdo.
+     */
+    private void eliminaSinHijoIzquierdo(Vertice eliminar) {
+        if (this.raiz == eliminar) {
+            this.raiz = this.raiz.derecho;
+            eliminar.derecho.padre = null;
+        } else {
+            eliminar.derecho.padre = eliminar.padre;
+            if (this.esHijoIzquierdo(eliminar)) {
+                eliminar.padre.izquierdo = eliminar.derecho;
+            } else {
+                eliminar.padre.derecho = eliminar.derecho;
+            }
+        }
+        this.elementos--;
+    }
+
+    /**
+     * Auxiliar de elimina. Elimina vertice que no tiene hijo derecho.
+     * @param eliminar el elemento a eliminar que debe no tener hijo derecho.
+     */
+    private void eliminaSinHijoDerecho(Vertice eliminar) {
+        if (this.raiz == eliminar) {
+            this.raiz = this.raiz.izquierdo;
+            eliminar.izquierdo.padre = null;
+        } else {
+            eliminar.izquierdo.padre = eliminar.padre;
+            if (this.esHijoIzquierdo(eliminar)) {
+                eliminar.padre.izquierdo = eliminar.izquierdo;
+            } else {
+                eliminar.padre.derecho = eliminar.izquierdo;
+            }
+        }
+        this.elementos--;
+    }
+
+    /**
+     * Auxiliar que dice si 2 vertices tienen diferente color.
+     * @param v1 VerticeRojinegro
+     * @param v2 VerticeRojinegro
+     * @return <code> true </code> si lo es. <code> false </code> en otro caso.
+     */
+    private boolean sonVerticesBicoloreados(VerticeRojinegro v1, VerticeRojinegro v2) {
+        return v1.color != v2.color;
+    }
+
+    private void subirUnicoHijo(Vertice padre) {
+        if (!padre.hayIzquierdo()) {
+            this.eliminaSinHijoIzquierdo(padre);
+        } else {
+            this.eliminaSinHijoDerecho(padre);
+        }
+    }
+
+    /**
      * Elimina un elemento del árbol. El método elimina el vértice que contiene
      * el elemento, y recolorea y gira el árbol como sea necesario para
      * rebalancearlo.
      * @param elemento el elemento a eliminar del árbol.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+        VerticeRojinegro aux, hijo;
+        VerticeRojinegro eliminar = this.verticeRojinegro(super.busca(elemento));
+        if (eliminar == null) {
+            return;
+        }
+        if (eliminar.hayIzquierdo()) {
+            aux = verticeRojinegro(maximoEnSubarbol(eliminar.izquierdo));
+            aux.elemento = eliminar.elemento;
+            eliminar = aux;
+        }
+        if (!eliminar.hayIzquierdo() && !eliminar.hayDerecho()) {
+            eliminar.izquierdo = this.nuevoVertice(null);
+        }
+        hijo = getUnicoHijo(eliminar);
+        this.subirUnicoHijo(eliminar);
+        hijo.color = Color.NEGRO;
+        // Si tenian diferentes colores, rebalanceamos.
+        if (!this.sonVerticesBicoloreados(eliminar, hijo)) {
+            //rebalanceo
+        }
+        //Terminamos
     }
 }
