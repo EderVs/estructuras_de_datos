@@ -329,9 +329,11 @@ public class ArbolRojinegro<T extends Comparable<T>>
         // Caso 3
         sobrinoIzq = verticeRojinegro(hermano.izquierdo);
         sobrinoDer = verticeRojinegro(hermano.derecho);
-        //if () {
-            
-        //}
+        if (this.esNegro(padre) && this.esNegro(hermano) && this.esNegro(sobrinoIzq) && this.esNegro(sobrinoDer)) {
+            hermano.color = Color.ROJO;
+            this.revalanceoElimina(padre);
+            return;
+        }
     }
 
     private void eliminarFantasma() {
