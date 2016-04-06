@@ -275,6 +275,10 @@ public class ArbolRojinegro<T extends Comparable<T>>
         return this.esNegro(v1) != this.esNegro(v2);
     }
 
+    /**
+     * Auxiliar de Elimina. Sube el unico vertice que puede tener el vertice padre.
+     * @param padre Vertice que sera remplazado por su unico hijo.
+     **/
     private void subirUnicoHijo(Vertice padre) {
         if (!padre.hayIzquierdo()) {
             this.eliminaSinHijoIzquierdo(padre);
