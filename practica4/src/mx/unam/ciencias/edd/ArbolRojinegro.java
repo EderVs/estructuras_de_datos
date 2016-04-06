@@ -152,7 +152,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
         return v.padre.derecho == v;
     }
 
-    private void revalanceoAgrega (VerticeRojinegro vertice) {
+    private void rebalanceoAgrega (VerticeRojinegro vertice) {
         VerticeRojinegro padre, tio, abuelo, aux;
         // Caso 1
         if (!vertice.hayPadre()) {
@@ -175,7 +175,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
             tio.color = Color.NEGRO;
             padre.color = Color.NEGRO;
             abuelo.color = Color.ROJO;
-            this.revalanceoAgrega(abuelo);
+            this.rebalanceoAgrega(abuelo);
             return;
         }
         // Caso 4
@@ -209,7 +209,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
         VerticeRojinegro ultimoAgregadoRN;
         super.agrega(elemento);
         ultimoAgregadoRN = this.verticeRojinegro(this.ultimoAgregado);
-        this.revalanceoAgrega(ultimoAgregadoRN);
+        this.rebalanceoAgrega(ultimoAgregadoRN);
     }
 
     /**
@@ -327,7 +327,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
      * el metodo de elimina. Se divide en 6 casos.
      * @param vertice VerticeRojiNegro desde donde se va a balancear.
      **/
-    private void revalanceoElimina(VerticeRojinegro vertice) {
+    private void rebalanceoElimina(VerticeRojinegro vertice) {
         VerticeRojinegro hermano, padre, sobrinoIzq, sobrinoDer;
         /**
          * Caso 1
@@ -377,7 +377,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
                 // Coloreamos al hermano de Rojo.
                 hermano.color = Color.ROJO;
                 // Hacemos recursion sobre el padre.
-                this.revalanceoElimina(padre);
+                this.rebalanceoElimina(padre);
                 // Terminamos
                 return;
             }
@@ -495,7 +495,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
         // Si tenian diferentes colores el hijo y el vertice que queremos eliminar, rebalanceamos.
         if (!this.sonVerticesBicoloreados(eliminar, hijo)) {
             hijo.color = Color.NEGRO;
-            this.revalanceoElimina(hijo);
+            this.rebalanceoElimina(hijo);
         } else {
             hijo.color = Color.NEGRO;
         }
