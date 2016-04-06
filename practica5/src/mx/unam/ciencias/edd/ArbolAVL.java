@@ -24,7 +24,7 @@ public class ArbolAVL<T extends Comparable<T>>
          * @param elemento el elemento del vértice.
          */
         public VerticeAVL(T elemento) {
-            // Aquí va su código.
+            super(elemento);
         }
 
         /**
@@ -32,7 +32,9 @@ public class ArbolAVL<T extends Comparable<T>>
          * @return una representación en cadena del vértice AVL.
          */
         public String toString() {
-            // Aquí va su código.
+            /**/
+            return "";
+            /**/
         }
 
         /**
@@ -51,7 +53,9 @@ public class ArbolAVL<T extends Comparable<T>>
             if (getClass() != o.getClass())
                 return false;
             @SuppressWarnings("unchecked") VerticeAVL vertice = (VerticeAVL)o;
-            // Aquí va su código.
+            /**/
+            return false;
+            /**/
         }
     }
 
@@ -84,7 +88,9 @@ public class ArbolAVL<T extends Comparable<T>>
      *         VerticeAVL}.
      */
     public int getAltura(VerticeArbolBinario<T> vertice) {
-        // Aquí va su código.
+        /**/
+        return 0;
+        /**/
     }
 
     /**
