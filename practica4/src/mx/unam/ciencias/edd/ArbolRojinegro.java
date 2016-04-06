@@ -441,9 +441,12 @@ public class ArbolRojinegro<T extends Comparable<T>>
         }
     }
 
-    private void eliminarFantasma() {
-        Vertice eliminar = this.busca(this.raiz, null);
-        if (eliminar != null) {
+    /**
+     * Auxiliar de Elimina. Elimina el posible vertice fantasma que pueda haber.
+     * @param eliminar VerticeRojinegro que queremos ver si es fantasma
+     **/
+    private void eliminarFantasma(VerticeRojinegro eliminar) {
+        if (eliminar.elemento == null) {
             eliminaHoja(eliminar);
         }
     }
@@ -493,7 +496,7 @@ public class ArbolRojinegro<T extends Comparable<T>>
             hijo.color = Color.NEGRO;
         }
         // Eliminamos el vertice fantasma si lo hay
-        this.eliminarFantasma();
+        this.eliminarFantasma(hijo);
         // FIN :)
     }
 }
