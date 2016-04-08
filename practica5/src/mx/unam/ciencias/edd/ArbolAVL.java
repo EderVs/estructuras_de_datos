@@ -73,14 +73,30 @@ public class ArbolAVL<T extends Comparable<T>>
         }
     }
 
+    /**
+     * Auxiliar. Calcula la altura de cualquier vertice y lo asigna a su atributo.
+     * @param vertice VerticeAVL de quien se quiere calcular la altura.
+     **/
     private void calcularAltura(VerticeAVL vertice) {
+        if (vertice == null) {
+            return;
+        }
         vertice.altura =  Math.max(this.getAltura(vertice.izquierdo), this.getAltura(vertice.derecho)) + 1;
     }
 
+    /**
+     * Auxiliar. Calcula el balance de cualquier vertice.
+     * @param vertice VerticeAVL de quier se quiere calcular el balance.
+     * @return el balance del vertice. 
+     **/
     private int calcularBalance(VerticeAVL vertice) {
         return (vertice == null) ? 0 : this.getAltura(verticeAVL(vertice.izquierdo)) - this.getAltura(verticeAVL(vertice.derecho));
     }
 
+    /**
+     * Auxiliar. Rebalancea el arbol.
+     * @param vertice VerticeAVL desde donde se va a rebalancear.
+     **/
     private void rebalanceo(VerticeAVL vertice) {
         VerticeAVL d, i;
         if (vertice == null) {
