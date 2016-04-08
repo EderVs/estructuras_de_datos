@@ -25,6 +25,7 @@ public class ArbolAVL<T extends Comparable<T>>
          */
         public VerticeAVL(T elemento) {
             super(elemento);
+            this.altura = 0;
         }
 
         /**
@@ -32,9 +33,24 @@ public class ArbolAVL<T extends Comparable<T>>
          * @return una representación en cadena del vértice AVL.
          */
         public String toString() {
-            /**/
-            return "";
-            /**/
+            return this.elemento + " " + this.altura + "/" + calcularBalance(this);
+        }
+
+        /**
+         * Auxiliar de equals. Compara vertice por vertice.
+         * @param v1 Vertice de arbol 1
+         * @param v2 Vertice de arbol 2
+         * @return <code>true</code> si arbol 1 y arbol 2
+         *         son iguales; <code>false</code> en otro caso.
+         */
+        private boolean equals(VerticeAVL v1, VerticeAVL v2) {
+            if (v1 == null && v2 == null) {
+                return true;
+            }
+            if ((v1 == null && v2 != null) || (v1 != null && v2 == null) || !v1.elemento.equals(v2.elemento) || v1.altura != v2.altura) {
+                return false;
+            }
+            return equals(verticeAVL(v1.izquierdo), verticeAVL(v2.izquierdo)) && equals(verticeAVL(v1.derecho), verticeAVL(v2.derecho));
         }
 
         /**
@@ -53,10 +69,44 @@ public class ArbolAVL<T extends Comparable<T>>
             if (getClass() != o.getClass())
                 return false;
             @SuppressWarnings("unchecked") VerticeAVL vertice = (VerticeAVL)o;
-            /**/
-            return false;
-            /**/
+            return this.equals(this, vertice);
         }
+    }
+
+    private void calcularAltura(VerticeAVL vertice) {
+        vertice.altura =  Math.max(this.getAltura(vertice.izquierdo), this.getAltura(vertice.derecho)) + 1;
+    }
+
+    private int calcularBalance(VerticeAVL vertice) {
+        return (vertice == null) ? 0 : this.getAltura(verticeAVL(vertice.izquierdo)) - this.getAltura(verticeAVL(vertice.derecho));
+    }
+
+    private void rebalanceo(VerticeAVL vertice) {
+        VerticeAVL d, i;
+        if (vertice == null) {
+            return;
+        }
+        this.calcularAltura(vertice);
+        if (this.calcularBalance(vertice) == -2) {
+            if (this.calcularBalance(verticeAVL(vertice.derecho)) == 1) {
+                d = verticeAVL(vertice.derecho);
+                super.giraDerecha(d);
+                this.calcularAltura(d);
+                this.calcularAltura(verticeAVL(d.padre));
+            }
+            super.giraIzquierda(vertice);
+            this.calcularAltura(vertice);
+        } else if (this.calcularBalance(vertice) == 2) {
+            if (this.calcularBalance(verticeAVL(vertice.izquierdo)) == -1) {
+                i = verticeAVL(vertice.izquierdo);
+                super.giraIzquierda(i);
+                this.calcularAltura(i);
+                this.calcularAltura(verticeAVL(i.padre));
+            }
+            super.giraDerecha(vertice);
+            this.calcularAltura(vertice);
+        }
+        this.rebalanceo(verticeAVL(vertice.padre));
     }
 
     /**
@@ -67,8 +117,102 @@ public class ArbolAVL<T extends Comparable<T>>
      * @param elemento el elemento a agregar.
      */
     @Override public void agrega(T elemento) {
-        // Aquí va su código.
+        VerticeAVL vertice;
+        super.agrega(elemento);
+        vertice = verticeAVL(super.ultimoAgregado);
+        this.rebalanceo(vertice);
     }
+
+    /**
+     * Verifica si el vertice recibido es hijo izquierdo de su padre
+     * @param v vertice que se verifica.
+     * @throws <code> true </code> si lo es. <code> false </code> en otro caso.
+     */    
+    private boolean esHijoIzquierdo(Vertice v) {
+        if (!v.hayPadre()) {
+            return false;
+        }
+        return v.padre.izquierdo == v;
+    }
+
+    /**
+     * Verifica si el vertice recibido es hijo derecho de su padre
+     * @param v vertice que se verifica.
+     * @throws <code> true </code> si lo es. <code> false </code> en otro caso.
+     */    
+    private boolean esHijoDerecho(Vertice v) {
+        if (!v.hayPadre()) {
+            return false;
+        }
+        return v.padre.derecho == v;
+    }
+
+    /**
+     * Auxiliar de elimina. Elimina una hoja.
+     * @param eliminar el elemento a eliminar que debe ser hoja.
+     */
+    private void eliminaHoja(Vertice eliminar) {
+        if (this.raiz == eliminar) {
+            this.raiz = null;
+            this.ultimoAgregado = null;
+        } else if (this.esHijoIzquierdo(eliminar)) {
+            eliminar.padre.izquierdo = null;
+        } else {
+            eliminar.padre.derecho = null;
+        }
+        this.elementos--;
+    }
+
+    /**
+     * Auxiliar de elimina. Elimina vertice que no tiene hijo izquierdo.
+     * @param eliminar el elemento a eliminar que debe no tener hijo izquierdo.
+     */
+    private void eliminaSinHijoIzquierdo(Vertice eliminar) {
+        if (this.raiz == eliminar) {
+            this.raiz = this.raiz.derecho;
+            eliminar.derecho.padre = null;
+        } else {
+            eliminar.derecho.padre = eliminar.padre;
+            if (this.esHijoIzquierdo(eliminar)) {
+                eliminar.padre.izquierdo = eliminar.derecho;
+            } else {
+                eliminar.padre.derecho = eliminar.derecho;
+            }
+        }
+        this.elementos--;
+    }
+
+    /**
+     * Auxiliar de elimina. Elimina vertice que no tiene hijo derecho.
+     * @param eliminar el elemento a eliminar que debe no tener hijo derecho.
+     */
+    private void eliminaSinHijoDerecho(Vertice eliminar) {
+        if (this.raiz == eliminar) {
+            this.raiz = this.raiz.izquierdo;
+            eliminar.izquierdo.padre = null;
+        } else {
+            eliminar.izquierdo.padre = eliminar.padre;
+            if (this.esHijoIzquierdo(eliminar)) {
+                eliminar.padre.izquierdo = eliminar.izquierdo;
+            } else {
+                eliminar.padre.derecho = eliminar.izquierdo;
+            }
+        }
+        this.elementos--;
+    }
+
+    /**
+     * Auxiliar de Elimina. Sube el unico vertice que puede tener el vertice padre.
+     * @param padre Vertice que sera remplazado por su unico hijo.
+     **/
+    private void subirUnicoHijo(Vertice padre) {
+        if (!padre.hayIzquierdo()) {
+            this.eliminaSinHijoIzquierdo(padre);
+        } else {
+            this.eliminaSinHijoDerecho(padre);
+        }
+    }
+
 
     /**
      * Elimina un elemento del árbol. El método elimina el vértice que contiene
@@ -77,7 +221,21 @@ public class ArbolAVL<T extends Comparable<T>>
      * @param elemento el elemento a eliminar del árbol.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+        VerticeAVL eliminar = verticeAVL(super.busca(elemento)), aux;
+        if (eliminar == null) {
+            return;
+        }
+        if (eliminar.hayIzquierdo()) {
+            aux = this.verticeAVL(super.maximoEnSubarbol(eliminar.izquierdo));
+            eliminar.elemento = aux.elemento;
+            eliminar = aux;
+        }
+        if (!eliminar.hayIzquierdo() && !eliminar.hayDerecho()) {
+            this.eliminaHoja(eliminar);
+        } else {
+            this.subirUnicoHijo(eliminar);
+        }
+        this.rebalanceo(verticeAVL(eliminar.padre));
     }
 
     /**
@@ -88,9 +246,7 @@ public class ArbolAVL<T extends Comparable<T>>
      *         VerticeAVL}.
      */
     public int getAltura(VerticeArbolBinario<T> vertice) {
-        /**/
-        return 0;
-        /**/
+        return (vertice == null) ? -1 : verticeAVL(vertice).altura;
     }
 
     /**
