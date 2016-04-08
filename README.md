@@ -30,3 +30,6 @@
 
 #### Práctica 4
   - *Arbol Binario Rojinegro*
+
+#### Práctica 5
+  - *Arbol Binario AVL*
