@@ -232,18 +232,16 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
      *         el árbol; <code>null</code> en otro caso.
      */
     @Override protected Vertice busca(Vertice vertice, T elemento) {
-        Vertice iz;
         if (vertice == null) {
             return null;
         }
-        iz = this.busca(vertice.izquierdo, elemento);
-        if (iz != null) {
-            return iz;
-        }
-        if ((vertice.elemento == null && elemento == null) || vertice.elemento.equals(elemento)) {
+        if (vertice.elemento.equals(elemento)) {
             return vertice;
         }
-        return this.busca(vertice.derecho, elemento);
+        if (vertice.elemento.compareTo(elemento) < 0) {
+            return busca(vertice.izquierdo, elemento);
+        }
+        return busca(vertice.derecho, elemento);
     }
 
     /**
