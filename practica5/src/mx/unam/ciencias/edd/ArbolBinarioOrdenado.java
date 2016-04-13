@@ -238,10 +238,10 @@ public class ArbolBinarioOrdenado<T extends Comparable<T>>
         if (vertice.elemento.equals(elemento)) {
             return vertice;
         }
-        if (vertice.elemento.compareTo(elemento) < 0) {
-            return busca(vertice.izquierdo, elemento);
+        if (elemento.compareTo(vertice.elemento) < 0) {
+            return this.busca(vertice.izquierdo, elemento);
         }
-        return busca(vertice.derecho, elemento);
+        return this.busca(vertice.derecho, elemento);
     }
 
     /**
