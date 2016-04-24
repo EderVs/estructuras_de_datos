@@ -33,3 +33,6 @@
 
 #### Práctica 5
   - *Arbol Binario AVL*
+
+#### Práctica 6
+  - *Graficas*
