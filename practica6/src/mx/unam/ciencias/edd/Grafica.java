@@ -123,9 +123,10 @@ public class Grafica<T> implements Coleccion<T> {
     }
 
     /**
-     * Auxiliar.
-     *
-     *
+     * Auxiliar que busca un elemento y regresa el Vertice que lo contiene
+     * @param elemento que se quiere encontrar.
+     * @return Vertice que contiene al elemento.
+     * @throws NoSuchElementException si no encuentra el elemento.
      **/
     private Vertice busca(T elemento){
         for (Vertice v: this.vertices) {
