@@ -256,7 +256,8 @@ public class Grafica<T> implements Coleccion<T> {
      * @throws NoSuchElementException si el elemento no está en la gráfica. 
      **/
     private void recorreYActua(T elemento, AccionVerticeGrafica<T> accion, MeteSaca<Vertice> ms) {
-        Vertice v = this.busca(elemento), vi;;
+        Vertice v = this.busca(elemento), vi;
+        this.paraCadaVertice((x) -> x.setColor(Color.NINGUNO));
         ms.mete(v);
         v.color = Color.NEGRO;
         while(!ms.esVacia()) {
@@ -269,9 +270,7 @@ public class Grafica<T> implements Coleccion<T> {
                 }
             }
         }
-        for (Vertice vj:this.vertices) {
-            vj.color = Color.NINGUNO;
-        }
+        this.paraCadaVertice((x) -> x.setColor(Color.NINGUNO));
     }
 
     /**
