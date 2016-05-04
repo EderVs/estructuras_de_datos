@@ -41,7 +41,8 @@ public class Indexable<T> implements ComparableIndexable<Indexable<T>> {
     @Override public int compareTo(Indexable<T> indexable) {
         if (this.valor == indexable.getValor()) {
             return 0;
-        } else if (this.valor > indexable.getValor()) {
+        }
+        if (this.valor > indexable.getValor()) {
             return 1;
         }
         return -1;

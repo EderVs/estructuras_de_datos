@@ -67,7 +67,7 @@ public class TestMonticuloMinimo {
         }
         monticulo = new MonticuloMinimo<Indexable<String>>(l);
         verificaMonticuloMinimo(monticulo);
-    }
+    } 
 
     /**
      * Prueba unitaria para {@link MonticuloMinimo#agrega}.
