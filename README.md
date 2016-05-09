@@ -12,11 +12,11 @@
 **Email:** eder.vs@ciencias.unam.mx
 
 #### Práctica 1
-  - *Listas*
+  - *Listas (Lists)*
 
 #### Práctica 2
-  - *Pilas*
-  - *Colas*
+  - *Pilas (Stacks)*
+  - *Colas (Queues)*
   - *Selection Sort*
   - *Quick Sort*
   - *Merge Sort*
@@ -24,15 +24,22 @@
   - *Binary Search*
 
 #### Práctica 3
-  - *Arbol Binario*
-  - *Arbol Binario Completo*
-  - *Arbol Binario Ordenado*
+  - *Arbol Binario (Binary Tree)*
+  - *Arbol Binario Completo (Complete Binary Tree)*
+  - *Arbol Binario Ordenado (Binary Search Tree)*
 
 #### Práctica 4
-  - *Arbol Binario Rojinegro*
+  - *Arbol Binario Rojinegro (Red-Black Tree)*
 
 #### Práctica 5
-  - *Arbol Binario AVL*
+  - *Arbol Binario AVL (AVL Tree)*
 
 #### Práctica 6
-  - *Graficas*
+  - *Graficas (Graphs)*
+
+#### Práctica 7
+  - *Monticulos Mínimos (Min Heaps)*
+
+#### Práctica 8
+  - *Trayectoria Mínima (Min Path)*
+  - *Dijkstra*
