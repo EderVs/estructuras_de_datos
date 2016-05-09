@@ -451,34 +451,79 @@ public class Grafica<T> implements Coleccion<T> {
     }
 
     private int compareToInfinitos(double a, double b) {
-        if ((a != -1 && b == -1) || a > b) {
-            return 1;
-        }
-        if ((a == -1 && b != -1) || a < b) {
+        if (a != -1 && (b == -1 || a < b)) {
             return -1;
+        }
+        if (b != -1 && (a == -1 || a > b)) {
+            return 1;
         }
         return 0;
     }
 
-    private void fijarDistancias(MonticuloMinimo<Vertice> mm) {
-        Vertice v = mm.elimina();
-        for (Vecino vci: v.vecinos) {
-            
+    private double sumaInfinitos(double a, double b) {
+        if (a == -1 || b == -1) {
+            return -1;
         }
+        return a + b;
+    }
+
+    private void fijarDistancias(boolean flag) {
+        MonticuloMinimo<Vertice> mm= new MonticuloMinimo<Vertice>(this.vertices);
+        Vertice v;
+        double pesoActual;
+        while (!mm.esVacio()) {
+            v = mm.elimina();
+            for (Vecino vci: v.vecinos) {
+                if (flag) {
+                    pesoActual = vci.peso;
+                } else {
+                    pesoActual = 1;
+                }
+                if (this.compareToInfinitos(sumaInfinitos(v.distancia, pesoActual), vci.vecino.distancia) < 0) {
+                    vci.vecino.distancia = sumaInfinitos(v.distancia, pesoActual);
+                    mm.reordena(vci.vecino);
+                }
+            }
+        }
+    }
+
+    private Lista<VerticeGrafica<T>> construirTrayectoria (Vertice origen, Vertice destino, boolean flag) {
+        Lista<VerticeGrafica<T>> trayectoria = new Lista<VerticeGrafica<T>>();
+        Vertice v;
+        double pesoActual;
+        if (destino.distancia != -1) {
+            trayectoria.agrega(destino);
+            v = destino;
+            while (v != origen) {
+                for (Vecino vci:v.vecinos) {
+                    if (flag) {
+                        pesoActual = vci.peso;
+                    } else {
+                        pesoActual = 1;
+                    }
+                    if (v.distancia - pesoActual == vci.vecino.distancia) {
+                        trayectoria.agregaInicio(vci.vecino);
+                        v = vci.vecino;
+                        break;  
+                    }
+                }
+            }
+        }
+        return trayectoria;
     }
 
     private Lista<VerticeGrafica<T>> trayectoria(T origen, T destino, boolean flag) {
         Vertice origenV = this.busca(origen), destinoV = this.busca(destino);
-        MonticuloMinimo<Vertice> mm;
-        
+
         for (Vertice v: vertices) {
             v.distancia = -1;
         }
         origenV.distancia = 0;
-        mm = new MonticuloMinimo<Vertice>(this.vertices);
-        this.fijarDistancias(mm);
+        System.out.println("ORIGEN: " + origen);
+        System.out.println("ORIGEN dist: " + origenV.distancia);
+        this.fijarDistancias(flag);
 
-        return null;
+        return this.construirTrayectoria(origenV, destinoV, flag);
     }
 
     /**
@@ -493,9 +538,7 @@ public class Grafica<T> implements Coleccion<T> {
      *         la gráfica.
      */
     public Lista<VerticeGrafica<T>> trayectoriaMinima(T origen, T destino) {
-        /* */
-        return null;
-        /* */
+        return trayectoria(origen, destino, false);
     }
 
     /**
