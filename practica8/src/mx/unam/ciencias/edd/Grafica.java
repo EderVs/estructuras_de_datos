@@ -99,6 +99,7 @@ public class Grafica<T> implements Coleccion<T> {
         public Vertice(T elemento) {
             this.elemento = elemento;
             this.color = Color.NINGUNO;
+            this.vecinos = new Lista<Grafica<T>.Vecino>();
         }
 
         /* Regresa el elemento del vértice. */
@@ -138,13 +139,7 @@ public class Grafica<T> implements Coleccion<T> {
 
         /* Compara dos vértices por distancia. */
         @Override public int compareTo(Vertice vertice) {
-            if (this.distancia > vertice.distancia) {
-                return 1;
-            }
-            if (this.distancia < vertice.distancia) {
-                return -1;
-            }
-            return 0;
+            return compareToInfinitos(this.distancia, vertice.distancia);
         }
     }
 
@@ -165,7 +160,7 @@ public class Grafica<T> implements Coleccion<T> {
      * Constructor único.
      */
     public Grafica() {
-        this.vertices = new Lista<Vertices>();
+        this.vertices = new Lista<Vertice>();
     }
 
     /**
@@ -200,6 +195,21 @@ public class Grafica<T> implements Coleccion<T> {
     }
 
     /**
+     * Auxiliar que busca un elemento y regresa el Vertice que lo contiene
+     * @param elemento que se quiere encontrar.
+     * @return Vertice que contiene al elemento.
+     * @throws NoSuchElementException si no encuentra el elemento.
+     **/
+    private Vertice busca(T elemento){
+        for (Vertice v: this.vertices) {
+            if (v.elemento.equals(elemento)) {
+                return v;
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
+    /**
      * Conecta dos elementos de la gráfica. Los elementos deben estar en la
      * gráfica. El peso de la vecino que conecte a los elementos será 1.
      * @param a el primer elemento a conectar.
@@ -209,7 +219,19 @@ public class Grafica<T> implements Coleccion<T> {
      *         igual a b.
      */
     public void conecta(T a, T b) {
-        // Aquí va su código.
+        Vertice av, bv;
+        Vecino vca, vcb;
+        if (a == b) {
+            throw new IllegalArgumentException();
+        }
+        if (this.sonVecinos(a, b)) {
+            throw new IllegalArgumentException();
+        }
+        av = this.busca(a);
+        bv = this.busca(b);
+        bv.vecinos.agrega(new Vecino(av, 1));
+        av.vecinos.agrega(new Vecino(bv, 1));
+        this.aristas += 1;
     }
 
     /**
@@ -223,7 +245,28 @@ public class Grafica<T> implements Coleccion<T> {
      *         igual a b.
      */
     public void conecta(T a, T b, double peso) {
-        // Aquí va su código.
+        Vertice av, bv;
+        Vecino vca, vcb;
+        if (a == b) {
+            throw new IllegalArgumentException();
+        }
+        if (this.sonVecinos(a, b)) {
+            throw new IllegalArgumentException();
+        }
+        av = this.busca(a);
+        bv = this.busca(b);
+        bv.vecinos.agrega(new Vecino(av, peso));
+        av.vecinos.agrega(new Vecino(bv, peso));
+        this.aristas += 1;
+    }
+
+    private Vecino obtenerVecino(Vertice a, Vertice b) {
+        for (Vecino v:a.vecinos) {
+            if (v.vecino.equals(b)) {
+                return v;
+            }
+        }
+        return null;
     }
 
     /**
@@ -235,7 +278,16 @@ public class Grafica<T> implements Coleccion<T> {
      * @throws IllegalArgumentException si a o b no están conectados.
      */
     public void desconecta(T a, T b) {
-        // Aquí va su código.
+        Vertice av = this.busca(a), bv = this.busca(b);
+        Vecino vca, vcb;
+        if (!this.sonVecinos(a,b)) {
+            throw new IllegalArgumentException();
+        }
+        vca = this.obtenerVecino(bv, av);
+        vcb = this.obtenerVecino(av, bv);
+        av.vecinos.elimina(vcb);
+        bv.vecinos.elimina(vca);
+        this.aristas -= 1;
     }
 
     /**
@@ -244,9 +296,12 @@ public class Grafica<T> implements Coleccion<T> {
      *         <tt>false</tt> en otro caso.
      */
     @Override public boolean contiene(T elemento) {
-        /* */
+        for (Vertice v:vertices) {
+            if (v.elemento.equals(elemento)) {
+                return true;
+            }
+        }
         return false;
-        /* */
     }
 
     /**
@@ -257,7 +312,11 @@ public class Grafica<T> implements Coleccion<T> {
      *         gráfica.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+        Vertice v = this.busca(elemento);
+        for (Vecino vci: v.vecinos) {
+            this.desconecta(v.elemento, vci.vecino.elemento);
+        }
+        vertices.elimina(v);
     }
 
     /**
@@ -269,9 +328,13 @@ public class Grafica<T> implements Coleccion<T> {
      * @throws NoSuchElementException si a o b no son elementos de la gráfica.
      */
     public boolean sonVecinos(T a, T b) {
-        /* */
+        Vertice av = this.busca(a), bv = this.busca(b);
+        for (Vecino v:av.vecinos) {
+            if (v.vecino.equals(bv)) {
+                return true;
+            }
+        }
         return false;
-        /* */
     }
 
     /**
@@ -285,9 +348,11 @@ public class Grafica<T> implements Coleccion<T> {
      * @throws NoSuchElementException si a o b no son elementos de la gráfica.
      */
     public double getPeso(T a, T b) {
-        /* */
-        return 0;
-        /* */
+        Vertice av = this.busca(a), bv = this.busca(b);
+        if (!this.sonVecinos(a,b)) {
+            return -1;
+        }
+        return this.obtenerVecino(av, bv).peso;
     }
 
     /**
@@ -297,9 +362,7 @@ public class Grafica<T> implements Coleccion<T> {
      * @return el vértice correspondiente el elemento recibido.
      */
     public VerticeGrafica<T> vertice(T elemento) {
-        /* */
-        return null;
-        /* */
+        return this.busca(elemento);
     }
 
     /**
@@ -308,7 +371,35 @@ public class Grafica<T> implements Coleccion<T> {
      * @param accion la acción a realizar.
      */
     public void paraCadaVertice(AccionVerticeGrafica<T> accion) {
-        // Aquí va su código.
+        for (Vertice v: vertices) {
+            accion.actua(v);
+        }
+    }
+
+    /**
+     * Auxiliar que recorre ya sea de manera bfs o dfs segun se le pase un MeteSaca y ejecuta una accion.
+     * @param elemento el elemento sobre cuyo vértice queremos comenzar el
+     *        recorrido.
+     * @param accion la acción a realizar.
+     * @param ms MeteSaca que vamos a Utilizar.
+     * @throws NoSuchElementException si el elemento no está en la gráfica. 
+     **/
+    private void recorreYActua(T elemento, AccionVerticeGrafica<T> accion, MeteSaca<Vertice> ms) {
+        Vertice v = this.busca(elemento), vi;
+        this.paraCadaVertice((x) -> x.setColor(Color.NINGUNO));
+        ms.mete(v);
+        v.color = Color.NEGRO;
+        while(!ms.esVacia()) {
+            vi = ms.saca();
+            accion.actua(vi);
+            for (Vecino vcj: vi.vecinos) {
+                if (vcj.vecino.color == Color.NINGUNO) {
+                    ms.mete(vcj.vecino);
+                    vcj.vecino.color = Color.NEGRO;
+                }
+            }
+        }
+        this.paraCadaVertice((x) -> x.setColor(Color.NINGUNO));
     }
 
     /**
@@ -322,7 +413,8 @@ public class Grafica<T> implements Coleccion<T> {
      * @throws NoSuchElementException si el elemento no está en la gráfica.
      */
     public void bfs(T elemento, AccionVerticeGrafica<T> accion) {
-        // Aquí va su código.
+        Cola<Vertice> cola = new Cola<Vertice>();
+        recorreYActua(elemento, accion, cola);
     }
 
     /**
@@ -336,7 +428,8 @@ public class Grafica<T> implements Coleccion<T> {
      * @throws NoSuchElementException si el elemento no está en la gráfica.
      */
     public void dfs(T elemento, AccionVerticeGrafica<T> accion) {
-        // Aquí va su código.
+        Pila<Vertice> pila = new Pila<Vertice>();
+        recorreYActua(elemento, accion, pila);
     }
 
     /**
@@ -345,9 +438,7 @@ public class Grafica<T> implements Coleccion<T> {
      *         otro caso.
      */
     @Override public boolean esVacio() {
-        /* */
-        return false;
-        /* */
+        return vertices.esVacio();
     }
 
     /**
@@ -356,9 +447,38 @@ public class Grafica<T> implements Coleccion<T> {
      * @return un iterador para iterar la gráfica.
      */
     @Override public Iterator<T> iterator() {
-        /* */
+        return new Iterador();
+    }
+
+    private int compareToInfinitos(double a, double b) {
+        if ((a != -1 && b == -1) || a > b) {
+            return 1;
+        }
+        if ((a == -1 && b != -1) || a < b) {
+            return -1;
+        }
+        return 0;
+    }
+
+    private void fijarDistancias(MonticuloMinimo<Vertice> mm) {
+        Vertice v = mm.elimina();
+        for (Vecino vci: v.vecinos) {
+            
+        }
+    }
+
+    private Lista<VerticeGrafica<T>> trayectoria(T origen, T destino, boolean flag) {
+        Vertice origenV = this.busca(origen), destinoV = this.busca(destino);
+        MonticuloMinimo<Vertice> mm;
+        
+        for (Vertice v: vertices) {
+            v.distancia = -1;
+        }
+        origenV.distancia = 0;
+        mm = new MonticuloMinimo<Vertice>(this.vertices);
+        this.fijarDistancias(mm);
+
         return null;
-        /* */
     }
 
     /**
