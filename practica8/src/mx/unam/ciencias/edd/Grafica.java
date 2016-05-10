@@ -450,6 +450,14 @@ public class Grafica<T> implements Coleccion<T> {
         return new Iterador();
     }
 
+    /**
+     * Hace un compareTo entre dos numeros y regresa lo indicado
+     * tomando en cuenta que puede trabajar con infinitos.
+     * @param a double que se quiere comparar
+     * @param b double que se quiere comparar
+     * @return -1 si el primer argumento es menor, 1 si es mayor
+     * y 0 si son iguales.
+     */
     private int compareToInfinitos(double a, double b) {
         if (a != -1 && (b == -1 || a < b)) {
             return -1;
@@ -460,6 +468,13 @@ public class Grafica<T> implements Coleccion<T> {
         return 0;
     }
 
+    /**
+     * Hace una suma entre dos numeros y regresa lo indicado
+     * tomando en cuenta que puede trabajar con infinitos.
+     * @param a double que se quiere sumar
+     * @param b double que se quiere sumar
+     * @return suma entre los dos valores.
+     */
     private double sumaInfinitos(double a, double b) {
         if (a == -1 || b == -1) {
             return -1;
@@ -467,6 +482,12 @@ public class Grafica<T> implements Coleccion<T> {
         return a + b;
     }
 
+    /**
+     * Auxiliar de Trayectoria. desde el minimo del monticulo hasta
+     * que este es vacio.
+     * @param flag boolean que sirve como bandera para contar el peso,
+     * de cada aristar o predeterminarlo con 1.
+     */
     private void fijarDistancias(boolean flag) {
         MonticuloMinimo<Vertice> mm= new MonticuloMinimo<Vertice>(this.vertices);
         Vertice v;
@@ -487,6 +508,15 @@ public class Grafica<T> implements Coleccion<T> {
         }
     }
 
+    /**
+     * Auxiliar de trayectoria. Obtiene la trayectoria despues de haber
+     * fijado las distancias.  
+     * @param origen Vertice de origen.
+     * @param destino Vertice de destino.
+     * @param flag boolean que sirve como bandera para contar el peso,
+     * de cada aristar o predeterminarlo con 1.
+     * @return Lista que incluye la trayectoria a seguir.
+     */
     private Lista<VerticeGrafica<T>> construirTrayectoria (Vertice origen, Vertice destino, boolean flag) {
         Lista<VerticeGrafica<T>> trayectoria = new Lista<VerticeGrafica<T>>();
         Vertice v;
@@ -512,6 +542,15 @@ public class Grafica<T> implements Coleccion<T> {
         return trayectoria;
     }
 
+    /**
+     * Auxiliar de trayectoria minima y de Dijkstra. Obtiene la trayectoria deseada
+     * a partir de la bandera.
+     * @param origen Generico de origen.
+     * @param destino Generico de destino.
+     * @param flag boolean que sirve como bandera para contar el peso,
+     * de cada aristar o predeterminarlo con 1.
+     * @return Lista que incluye la trayectoria a seguir.
+     */
     private Lista<VerticeGrafica<T>> trayectoria(T origen, T destino, boolean flag) {
         Vertice origenV = this.busca(origen), destinoV = this.busca(destino);
 
