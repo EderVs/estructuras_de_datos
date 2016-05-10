@@ -519,8 +519,6 @@ public class Grafica<T> implements Coleccion<T> {
             v.distancia = -1;
         }
         origenV.distancia = 0;
-        System.out.println("ORIGEN: " + origen);
-        System.out.println("ORIGEN dist: " + origenV.distancia);
         this.fijarDistancias(flag);
 
         return this.construirTrayectoria(origenV, destinoV, flag);
@@ -553,8 +551,6 @@ public class Grafica<T> implements Coleccion<T> {
      *         la gráfica.
      */
     public Lista<VerticeGrafica<T>> dijkstra(T origen, T destino) {
-        /* */
-        return null;
-        /* */
+        return trayectoria(origen, destino, true);
     }
 }
