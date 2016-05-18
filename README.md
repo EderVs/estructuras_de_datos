@@ -43,3 +43,8 @@
 #### Práctica 8
   - *Trayectoria Mínima (Min Path)*
   - *Dijkstra*
+
+#### Práctica 9
+  - *XOR Hash*
+  - *Bob Jenkins Hash*
+  - *GLIB Hash*
