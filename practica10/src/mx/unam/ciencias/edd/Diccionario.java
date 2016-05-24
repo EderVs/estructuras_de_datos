@@ -309,9 +309,13 @@ public class Diccionario<K, V> implements Iterable<V> {
      * @return cuántas colisiones hay en el diccionario.
      */
     public int colisiones() {
-        /* */
-		return 0;
-		/* */
+    	int colisiones = 0;
+		for (Lista<Entrada> l : this.entradas) {
+			if (l != null) {
+				colisiones += l.getLongitud()-1;	
+			}
+		}
+		return colisiones;
     }
 
     /**
@@ -320,9 +324,16 @@ public class Diccionario<K, V> implements Iterable<V> {
      * @return el máximo número de colisiones para una misma llave.
      */
     public int colisionMaxima() {
-        /* */
-		return 0;
-		/* */
+        int colision, colisionMaxima = 0;
+		for (Lista<Entrada> l : this.entradas) {
+			if (l != null) {
+				colision = l.getLongitud()-1;
+				if (colisionMaxima < colision) {
+					colisionMaxima = colision;
+				}	
+			}
+		}
+		return colisionMaxima;
     }
 
     /**
