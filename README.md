@@ -48,3 +48,7 @@
   - *XOR Hash*
   - *Bob Jenkins Hash*
   - *GLIB Hash*
+
+#### Práctica 10
+  - *Diccionario (Dict)*
+  - *Conjuntos (Sets)*
