@@ -40,45 +40,21 @@ public class Diccionario<K, V> implements Iterable<V> {
         /* Construye un nuevo iterador, auxiliándose de las listas del
          * diccionario. */
         public Iterador() {
-            for (int i = 0; i < entradas.length; i++) {
-				if (entradas[i] != null) {
-					this.indice = i;
-					this.iterador = entradas[i].iterator();
-					break;
-				}
+			Lista<K> llaves = llaves();
+			Lista<Diccionario<K,V>.Entrada> iterador = new Lista<Diccionario<K,V>.Entrada>();
+			for (K llave: llaves) {
+				iterador.agrega(getEntrada(llave));
 			}
-        }
-
+			this.iterador = iterador.iterator();
+		}
         /* Nos dice si hay un siguiente elemento. */
         public boolean hasNext() {
-			if (!this.iterador.hasNext()) {
-				for (int i = this.indice; i < entradas.length; i++) {
-					if (entradas[i] != null) {
-						return true;
-					}
-				}
-				return false;
-			}
-			return true;
+			return this.iterador.hasNext();
 		}
 
         /* Regresa el siguiente elemento. */
         public V next() {
-            V elemento;
-			if (!this.hasNext()) {
-				throw new NoSuchElementException();
-			}
-			elemento = this.iterador.next().valor;
-			if (!this.iterador.hasNext()) {
-				for (int i = this.indice; i < entradas.length; i++) {
-					if (entradas[i] != null) {
-						this.indice = i;
-						this.iterador = entradas[i].iterator();
-						break;
-					}
-				}
-			}
-			return elemento;
+            return this.iterador.next().valor;
         }
 
         /* No lo implementamos: siempre lanza una excepción. */
@@ -112,9 +88,9 @@ public class Diccionario<K, V> implements Iterable<V> {
      * predeterminados.
      */
     public Diccionario() {
-        this.mascara = MIN_N;
+        this.mascara = MIN_N-1;
 		this.picadillo = ((K o) -> o.hashCode());
-		this.entradas = nuevoArreglo(mascara);
+		this.entradas = nuevoArreglo(mascara+1);
     }
 
 	private int calcularMascara(int tam) {
@@ -143,7 +119,7 @@ public class Diccionario<K, V> implements Iterable<V> {
      * @param picadillo el picadillo a utilizar.
      */
     public Diccionario(Picadillo<K> picadillo) {
-        this.mascara = MIN_N;
+        this.mascara = MIN_N-1;
 		this.picadillo = picadillo;
 		this.entradas = nuevoArreglo(mascara+1);
     }
@@ -214,6 +190,18 @@ public class Diccionario<K, V> implements Iterable<V> {
 		
     }
 
+	private Entrada getEntrada(K llave) {
+		int i = this.aplicarHash(llave);
+		if(this.entradas[i] != null) {
+			for (Entrada e:entradas[i]) {
+				if (e.llave.equals(llave)) {
+					return e;
+				}
+			}
+		}
+		throw new NoSuchElementException();
+	}
+
     /**
      * Regresa el valor del diccionario asociado a la llave proporcionada.
      * @param llave la llave para buscar el valor.
@@ -221,15 +209,7 @@ public class Diccionario<K, V> implements Iterable<V> {
      * @throws NoSuchElementException si la llave no está en el diccionario.
      */
     public V get(K llave) {
-    	int i = this.aplicarHash(llave);
-		if (this.entradas[i] != null) {
-			for (Entrada e:entradas[i]) {
-				if (e.llave.equals(llave)) {
-					return e.valor;
-				}
-			}
-		}
-		throw new NoSuchElementException();
+    	return this.getEntrada(llave).valor;
     }
 
     /**
@@ -372,8 +352,16 @@ public class Diccionario<K, V> implements Iterable<V> {
         if (!(o instanceof Diccionario))
             return false;
         @SuppressWarnings("unchecked") Diccionario<K, V> d = (Diccionario<K, V>)o;
-        // Aquí va su código.
-		return false;
+        Lista<K> llaves = this.llaves(), llaves_d = d.llaves();
+		if (llaves.getLongitud() != llaves_d.getLongitud()) {
+			return false;
+		}
+		for (K llave :llaves) {
+			if (!(d.contiene(llave) && d.get(llave).equals(this.get(llave)))) {
+				return false;
+			}
+		}
+		return true;
     }
 
     /**
@@ -382,8 +370,6 @@ public class Diccionario<K, V> implements Iterable<V> {
      * @return un iterador para iterar el diccionario.
      */
     @Override public Iterator<V> iterator() {
-        /* */
-		return null;
-		/* */
-    }
+    	return new Iterador();   
+	}
 }
