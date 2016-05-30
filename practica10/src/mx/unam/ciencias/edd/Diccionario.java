@@ -219,11 +219,13 @@ public class Diccionario<K, V> implements Iterable<V> {
      *         <tt>false</tt> en otro caso.
      */
     public boolean contiene(K llave) {
-		int i = this.aplicarHash(llave);
-		if (this.entradas[i] != null) {
-			for (Entrada e:entradas[i]) {
-				if (e.llave.equals(llave)) {
-					return true;
+		if (llave != null) {
+			int i = this.aplicarHash(llave);
+			if (this.entradas[i] != null) {
+				for (Entrada e:entradas[i]) {
+					if (e.llave.equals(llave)) {
+						return true;
+					}
 				}
 			}
 		}

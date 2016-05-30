@@ -16,15 +16,15 @@ public class Conjunto<T> implements Coleccion<T> {
      * Crea un nuevo conjunto.
      */
     public Conjunto() {
-        // Aquí va su código.
-    }
+        this.conjunto = new Diccionario<T, T>();
+	}
 
     /**
      * Crea un nuevo conjunto para un número determinado de elementos.
      * @param n el número tentativo de elementos.
      */
     public Conjunto(int n) {
-        // Aquí va su código.
+        this.conjunto = new Diccionario<T, T>(n);
     }
 
     /**
@@ -33,7 +33,10 @@ public class Conjunto<T> implements Coleccion<T> {
      * @throws IllegalArgumentException si el elemento es <code>null</code>.
      */
     @Override public void agrega(T elemento) {
-        // Aquí va su código.
+        if (elemento == null) {
+			throw new IllegalArgumentException();
+		}
+		this.conjunto.agrega(elemento, elemento);
     }
 
     /**
@@ -43,8 +46,7 @@ public class Conjunto<T> implements Coleccion<T> {
      *         <code>false</code> en otro caso.
      */
     @Override public boolean contiene(T elemento) {
-        // Aquí va su código.
-		return false;
+		return this.conjunto.contiene(elemento);
     }
 
     /**
@@ -52,7 +54,7 @@ public class Conjunto<T> implements Coleccion<T> {
      * @param elemento el elemento que queremos eliminar del conjunto.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+        this.conjunto.elimina(elemento);
     }
 
     /**
@@ -65,9 +67,7 @@ public class Conjunto<T> implements Coleccion<T> {
         if (!(o instanceof Conjunto))
             return false;
         @SuppressWarnings("unchecked") Conjunto<T> c = (Conjunto<T>)o;
-        /* */
-		return false;
-		/* */
+        return c.conjunto.equals(this.conjunto);
     }
 
     /**
@@ -76,9 +76,7 @@ public class Conjunto<T> implements Coleccion<T> {
      *         otro caso.
      */
     @Override public boolean esVacio() {
-        /* */
-		return false;
-		/* */
+		return this.conjunto.getElementos() == 0;
     }
 
     /**
@@ -86,10 +84,8 @@ public class Conjunto<T> implements Coleccion<T> {
      * @return el número de elementos en el conjunto.
      */
     @Override public int getElementos() {
-    	/* */
-		return 0;
-		/* */    
-    }
+    	return this.conjunto.getElementos();
+	}
 
     /**
      * Regresa la intersección del conjunto y el conjunto recibido.
@@ -97,9 +93,13 @@ public class Conjunto<T> implements Coleccion<T> {
      * @return la intersección del conjunto y el conjunto recibido.
      */
     public Conjunto<T> interseccion(Conjunto<T> conjunto) {
-        /* */
-		return null;
-		/* */
+        Conjunto<T> interseccion = new Conjunto<T>();
+		for (T elemento: this.conjunto) {
+			if (conjunto.contiene(elemento)) {
+				interseccion.agrega(elemento);
+			}
+		}
+		return interseccion;
     }
 
     /**
@@ -108,9 +108,14 @@ public class Conjunto<T> implements Coleccion<T> {
      * @return la unión del conjunto y el conjunto recibido.
      */
     public Conjunto<T> union(Conjunto<T> conjunto) {
-        /* */
-		return null;
-		/* */
+        Conjunto<T> union = new Conjunto<T>();
+		for (T elemento: this.conjunto) {
+			union.agrega(elemento);
+		}
+		for (T elemento: conjunto) {
+			union.agrega(elemento);
+		}
+		return union;
     }
 
     /**
@@ -118,8 +123,6 @@ public class Conjunto<T> implements Coleccion<T> {
      * @return un iterador para iterar el conjunto.
      */
     @Override public Iterator<T> iterator() {
-        /* */
-		return null;
-		/* */
+        return this.conjunto.iterator();
     }
 }
