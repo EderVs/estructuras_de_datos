@@ -91,7 +91,7 @@ public class Diccionario<K, V> implements Iterable<V> {
         this.mascara = MIN_N-1;
 		this.picadillo = ((K o) -> o.hashCode());
 		this.entradas = nuevoArreglo(mascara+1);
-    }
+	}
 
 	private int calcularMascara(int tam) {
 		int m = 1;
