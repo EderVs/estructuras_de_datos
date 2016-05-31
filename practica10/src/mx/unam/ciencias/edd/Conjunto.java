@@ -17,7 +17,7 @@ public class Conjunto<T> implements Coleccion<T> {
      */
     public Conjunto() {
         this.conjunto = new Diccionario<T, T>();
-	}
+    }
 
     /**
      * Crea un nuevo conjunto para un número determinado de elementos.
@@ -34,9 +34,9 @@ public class Conjunto<T> implements Coleccion<T> {
      */
     @Override public void agrega(T elemento) {
         if (elemento == null) {
-			throw new IllegalArgumentException();
-		}
-		this.conjunto.agrega(elemento, elemento);
+            throw new IllegalArgumentException();
+        }
+        this.conjunto.agrega(elemento, elemento);
     }
 
     /**
@@ -46,7 +46,7 @@ public class Conjunto<T> implements Coleccion<T> {
      *         <code>false</code> en otro caso.
      */
     @Override public boolean contiene(T elemento) {
-		return this.conjunto.contiene(elemento);
+        return this.conjunto.contiene(elemento);
     }
 
     /**
@@ -76,7 +76,7 @@ public class Conjunto<T> implements Coleccion<T> {
      *         otro caso.
      */
     @Override public boolean esVacio() {
-		return this.conjunto.getElementos() == 0;
+        return this.conjunto.getElementos() == 0;
     }
 
     /**
@@ -84,8 +84,8 @@ public class Conjunto<T> implements Coleccion<T> {
      * @return el número de elementos en el conjunto.
      */
     @Override public int getElementos() {
-    	return this.conjunto.getElementos();
-	}
+        return this.conjunto.getElementos();
+    }
 
     /**
      * Regresa la intersección del conjunto y el conjunto recibido.
@@ -94,12 +94,12 @@ public class Conjunto<T> implements Coleccion<T> {
      */
     public Conjunto<T> interseccion(Conjunto<T> conjunto) {
         Conjunto<T> interseccion = new Conjunto<T>();
-		for (T elemento: this.conjunto) {
-			if (conjunto.contiene(elemento)) {
-				interseccion.agrega(elemento);
-			}
-		}
-		return interseccion;
+        for (T elemento: this.conjunto) {
+            if (conjunto.contiene(elemento)) {
+                interseccion.agrega(elemento);
+            }
+        }
+        return interseccion;
     }
 
     /**
@@ -109,13 +109,13 @@ public class Conjunto<T> implements Coleccion<T> {
      */
     public Conjunto<T> union(Conjunto<T> conjunto) {
         Conjunto<T> union = new Conjunto<T>();
-		for (T elemento: this.conjunto) {
-			union.agrega(elemento);
-		}
-		for (T elemento: conjunto) {
-			union.agrega(elemento);
-		}
-		return union;
+        for (T elemento: this.conjunto) {
+            union.agrega(elemento);
+        }
+        for (T elemento: conjunto) {
+            union.agrega(elemento);
+        }
+        return union;
     }
 
     /**
